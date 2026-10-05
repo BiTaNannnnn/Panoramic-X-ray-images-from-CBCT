@@ -37,6 +37,17 @@ Test_imgs/
 *.pth
 *.pt
 *.ckpt
+*.safetensors
+*.onnx
+*.bin
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.csv
+*.tsv
+*.jsonl
+*.log
 
 # OS / editor
 .DS_Store

@@ -1,0 +1,14 @@
+matplotlib>=3.6
+numpy>=1.23
+open3d
+opencv-python
+Pillow>=9.3
+pynrrd
+scikit-image
+scipy
+sympy
+torch
+torchvision
+tqdm>=4.64
+trimesh
+wandb

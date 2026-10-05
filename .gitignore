@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+
+# Environments
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Private data and generated assets
+data/
+DATA_SET/
+Data_Tooth/
+checkpoints/
+log/
+logs/
+wandb/
+outputs/
+results/
+predict_mesh/
+Test_imgs/
+
+# Medical images, meshes, model weights, and large arrays
+*.nii
+*.nii.gz
+*.nrrd
+*.dcm
+*.stl
+*.ply
+*.obj
+*.mat
+*.npy
+*.npz
+*.pth
+*.pt
+*.ckpt
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

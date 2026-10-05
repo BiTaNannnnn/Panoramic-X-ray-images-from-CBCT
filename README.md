@@ -1,63 +1,119 @@
-# PX2Tooth Code Release
+# 🦷 PX2Tooth
 
-✨ **Code release for generating panoramic X-ray representations from CBCT data and reconstructing 3D tooth point clouds from a single panoramic X-ray.**
+<p align="center">
+  <b>Reconstructing 3D tooth point clouds from a single panoramic X-ray</b>
+</p>
 
-This repository contains the cleaned research code associated with the paper:
+<p align="center">
+  <img alt="arXiv" src="https://img.shields.io/badge/arXiv-2411.03725-b31b1b">
+  <img alt="Task" src="https://img.shields.io/badge/Task-2D%20Panoramic%20X--ray%20%E2%86%92%203D%20Teeth-blue">
+  <img alt="Framework" src="https://img.shields.io/badge/Framework-PyTorch-orange">
+  <img alt="Code" src="https://img.shields.io/badge/Release-Code%20Only-green">
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-purple">
+</p>
+
+PX2Tooth is a cleaned research-code release for the paper:
 
 > **PX2Tooth: Reconstructing the 3D Point Cloud Teeth from a Single Panoramic X-ray**  
 > arXiv: [2411.03725](https://arxiv.org/abs/2411.03725)
 
-The project studies a two-stage dental reconstruction pipeline: first segmenting teeth from panoramic X-ray images, and then reconstructing tooth-level 3D point clouds from the 2D panoramic input.
+The project studies a dental reconstruction pipeline that first extracts tooth structures from panoramic X-ray images and then reconstructs tooth-level 3D point clouds from the 2D panoramic input.
 
 ---
 
-## 🌟 What Is Included
+## ✨ Highlights
 
-| Component | Description |
-|---|---|
-| `data_process/` | Preprocessing scripts for panoramic image generation, tooth-mask extraction, arch-curve estimation, target-label construction, mesh conversion, and scale adjustment. |
-| `px2tooth/` | Main PyTorch code for segmentation and 3D tooth point-cloud generation, including U-Net, PointNet-style generation modules, training scripts, testing scripts, dataloaders, and metrics. |
-| `baseline_generation/model/` | Baseline generation-model code adapted from the original baseline implementation used in the project. |
-| `DATA_NOTICE.md` | Data privacy and release policy. |
-| `requirements.txt` | Minimal Python package list for setting up the code environment. |
+| Feature | Description |
+| --- | --- |
+| 🦷 Panoramic-to-3D reconstruction | Reconstructs 3D tooth point clouds from a single panoramic X-ray input. |
+| 🧩 Two-stage pipeline | Combines 2D tooth segmentation with PointNet-style 3D point-cloud generation. |
+| 🩻 CBCT-derived preprocessing | Includes scripts for generating panoramic representations and labels from CBCT/mesh data. |
+| 🧠 Segmentation + generation code | Provides U-Net-style segmentation and 3D generation modules in PyTorch. |
+| 🔐 Privacy-aware release | Releases code only; clinical images, masks, meshes, checkpoints, and logs are not redistributed. |
 
 ---
 
-## 🧩 Repository Structure
+## 🧭 Pipeline Overview
 
 ```text
-.
-├── baseline_generation/
-│   └── model/                  # Baseline generation modules
-├── data_process/               # CBCT-to-panorama and label preprocessing
+CBCT volume / dental mesh
+        │
+        ▼
+Panoramic projection + arch-curve preprocessing
+        │
+        ▼
+2D panoramic tooth segmentation
+        │
+        ▼
+Tooth-level feature extraction
+        │
+        ▼
+3D tooth point-cloud reconstruction
+        │
+        ▼
+Evaluation with segmentation and point-cloud metrics
+```
+
+The released code is organized around two main stages:
+
+| Stage | Main Goal | Representative Files |
+| --- | --- | --- |
+| 🛠️ Preprocessing | Generate panoramic projections, tooth masks, arch curves, target labels, and mesh/point-cloud inputs | `data_process/*.py` |
+| 🖼️ 2D Segmentation | Segment tooth regions from panoramic X-ray images | `px2tooth/train_seg.py`, `px2tooth/test_Unet.py`, `px2tooth/unet/` |
+| 🧬 3D Generation | Reconstruct tooth-level point clouds from panoramic features | `px2tooth/train_all.py`, `px2tooth/test_all.py`, `px2tooth/PointNet_3d/` |
+| 📏 Evaluation | Compute segmentation and 3D reconstruction quality metrics | `px2tooth/evaluate.py`, `px2tooth/utils/IOU.py`, `px2tooth/utils/evaluation_metrics.py` |
+
+---
+
+## 📦 Repository Layout
+
+```text
+PX2Tooth/
+├── data_process/                 # CBCT-to-panorama and label preprocessing scripts
 ├── px2tooth/
-│   ├── train_all.py            # Joint segmentation + generation training entry
-│   ├── test_all.py             # Joint model testing / inference entry
-│   ├── train_seg.py            # U-Net segmentation training
-│   ├── test_Unet.py            # U-Net segmentation inference
-│   ├── unet/                   # 2D segmentation network
-│   ├── PointNet_3d/            # 3D point-cloud generation modules
-│   └── utils/                  # Dataloaders, losses, metrics, mesh utilities
-├── DATA_NOTICE.md
+│   ├── train_seg.py              # U-Net segmentation training entry
+│   ├── test_Unet.py              # U-Net segmentation inference/evaluation
+│   ├── train_all.py              # Joint segmentation + 3D generation training
+│   ├── test_all.py               # Joint model inference/evaluation
+│   ├── predict_Unet.py           # Segmentation prediction utility
+│   ├── evaluate.py               # Evaluation helper
+│   ├── unet/                     # 2D U-Net modules
+│   ├── PointNet_3d/              # PointNet-style 3D modules
+│   └── utils/                    # Dataloaders, metrics, mesh and tensor utilities
+├── baseline_generation/
+│   └── model/                    # Baseline generation-model components
+├── DATA_NOTICE.md                # Data privacy and release policy
+├── requirements.txt              # Main dependency list
 ├── LICENSE
-└── requirements.txt
+└── README.md
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-Create an environment:
+Create and activate an environment:
 
 ```bash
 conda create -n px2tooth python=3.8 -y
 conda activate px2tooth
+```
+
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
-Install PyTorch following your CUDA version from the official PyTorch website. The original experiments were developed with PyTorch and CUDA GPUs.
+Install PyTorch according to your CUDA version from the official PyTorch website. The original experiments were developed with PyTorch on CUDA GPUs.
 
-Prepare your local data paths. Because the clinical CBCT data are private and cannot be redistributed, paths in the released scripts have been anonymized as `xxx`. Replace these placeholders with your own local folders, for example:
+---
+
+## 🗂️ Configure Local Data Paths
+
+This is a **code-only release**. Clinical CBCT data and derived assets are not included. In the released scripts, private local paths are anonymized as `xxx`.
+
+Before running training or inference, replace placeholders with your own local data layout, for example:
 
 ```text
 xxx/CBCT
@@ -67,63 +123,106 @@ xxx/mesh_labels
 xxx/checkpoints
 ```
 
-Run segmentation training:
-
-```bash
-cd px2tooth
-python train_seg.py --epochs 100 --batch-size 1 --classes 48
-```
-
-Run the joint segmentation-generation training pipeline:
-
-```bash
-cd px2tooth
-python train_all.py --batch_size 1 --npoint 4096 --classes 48
-```
-
-Run joint inference / evaluation:
-
-```bash
-cd px2tooth
-python test_all.py --batch_size 1 --npoint 4096 --classes 48
-```
-
-> The commands above show the original code entry points. Users need to configure local data paths, checkpoint paths, and GPU settings for their own environment.
+See [`DATA_NOTICE.md`](DATA_NOTICE.md) for the full data and privacy policy.
 
 ---
 
-## 🔬 Main Pipeline
+## 🧪 Common Commands
 
-1. **CBCT preprocessing**  
-   Scripts in `data_process/` generate panoramic projections, estimate the dental arch curve, extract tooth masks, and prepare target labels from CBCT and mesh annotations.
+### 1. Train panoramic tooth segmentation
 
-2. **Panoramic tooth segmentation**  
-   `px2tooth/train_seg.py` trains a U-Net-style segmentation model for tooth-region prediction on panoramic X-ray images.
+```bash
+cd px2tooth
+python train_seg.py \
+  --epochs 100 \
+  --batch-size 1 \
+  --classes 48
+```
 
-3. **3D tooth point-cloud generation**  
-   `px2tooth/train_all.py` connects the segmentation output with PointNet-style generation modules to reconstruct 3D tooth point clouds.
+### 2. Run U-Net segmentation inference
 
-4. **Evaluation**  
-   `px2tooth/test_all.py` and utility metrics compute segmentation and 3D reconstruction quality, including IoU and point-cloud distance metrics.
+```bash
+cd px2tooth
+python test_Unet.py \
+  --model path/to/checkpoint.pth \
+  --input path/to/panoramic_images \
+  --output path/to/output_masks \
+  --classes 48
+```
+
+### 3. Train the joint segmentation-generation pipeline
+
+```bash
+cd px2tooth
+python train_all.py \
+  --batch_size 1 \
+  --npoint 4096 \
+  --classes 48
+```
+
+### 4. Run joint inference / evaluation
+
+```bash
+cd px2tooth
+python test_all.py \
+  --batch_size 1 \
+  --npoint 4096 \
+  --classes 48
+```
+
+> These commands expose the original research-code entry points. You will need to configure local data roots, checkpoint paths, GPU IDs, and experiment directories for your own environment.
 
 ---
 
-## 🔐 Data Policy
+## 🧰 Script Map
 
-Clinical CBCT scans, derived panoramic images, tooth masks, mesh labels, checkpoints, and experiment logs are **not included** in this repository because they may contain private or license-restricted medical data.
+| File / Folder | Purpose |
+| --- | --- |
+| `data_process/Get_Panoramic_Mean.py` | Panoramic projection / mean image generation helper |
+| `data_process/Get_Panoramic_Label.py` | Panoramic label generation |
+| `data_process/Get_Teeth_Mask.py` | Tooth-mask extraction |
+| `data_process/Get_Teeth_curve.py` | Dental arch-curve estimation |
+| `data_process/Get_target_label.py` | Target label construction |
+| `data_process/nrrd2mesh.py` | NRRD-to-mesh conversion utility |
+| `data_process/points2mesh.py` | Point-to-mesh conversion utility |
+| `px2tooth/train_seg.py` | Segmentation training |
+| `px2tooth/test_Unet.py` | Segmentation testing/inference |
+| `px2tooth/train_all.py` | Joint segmentation + 3D generation training |
+| `px2tooth/test_all.py` | Joint model testing/evaluation |
+| `px2tooth/PointNet_3d/train_semseg.py` | PointNet-style 3D training entry |
+| `baseline_generation/model/` | Baseline generation-model building blocks |
 
-All private paths, case identifiers, and local server information have been replaced with `xxx` or `CASE_ID`.
+---
 
-See [`DATA_NOTICE.md`](DATA_NOTICE.md) for details.
+## 🔐 Data and Privacy Policy
+
+The following assets are **not included** in this public repository:
+
+| Not Released | Reason |
+| --- | --- |
+| Raw CBCT volumes | Clinical data may be private or institutionally restricted. |
+| Derived panoramic X-ray images | Generated from private CBCT data. |
+| Tooth masks and label images | Derived clinical annotations are not redistributed. |
+| STL / PLY / OBJ mesh labels | Mesh labels may contain private or restricted information. |
+| Patient or case identifiers | Removed for privacy. |
+| Model checkpoints | Not part of the cleaned code release. |
+| Training logs and visualizations | Experiment artifacts are excluded. |
+
+Public-release placeholders:
+
+| Placeholder | Meaning |
+| --- | --- |
+| `xxx` | Private local path or project-specific data root |
+| `CASE_ID` | Anonymized case identifier |
 
 ---
 
 ## 📌 Notes
 
-- This is a cleaned research-code release, not a turnkey clinical software package.
-- Some scripts reflect the original experimental workflow and may require local path configuration before running.
+- This repository is a cleaned research-code release, not a turnkey clinical software package.
+- Some scripts reflect the original experimental workflow and require local path configuration before running.
 - No raw medical images, patient identifiers, model checkpoints, or training logs are included.
-- The code is released to support reproducibility of the method design and implementation logic.
+- The code is released to support method inspection, reproducibility, and extension.
 
 ---
 
@@ -144,3 +243,5 @@ If you use this code, please cite the associated paper:
 ## ⚖️ License
 
 The released code is provided under the MIT License. Data, annotations, clinical images, checkpoints, and derived private assets are not redistributed.
+
+See [`LICENSE`](LICENSE) and [`DATA_NOTICE.md`](DATA_NOTICE.md) for details.
